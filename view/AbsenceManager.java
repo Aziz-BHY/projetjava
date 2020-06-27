@@ -5,7 +5,7 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import net.miginfocom.swing.MigLayout;
 import sun.security.util.ArrayUtil;
-import Model.Util;
+import model.Util;
 import java.awt.event.*;
 import java.util.ArrayList;
 
@@ -21,6 +21,7 @@ public class AbsenceManager extends JPanel implements ActionListener {
     private JScrollPane ClassTab;
     private JScrollPane AbsTab;
     private ArrayList<Integer> AbsListe;
+    private JButton unAbsBtn;
     String[] entetes = {"id_etudiant" , "nom", "prenom" , "classe"};
     String[][] donnees = {
             {"2" , "aziz" , "ben hadj yahia", "LFI"},
@@ -78,7 +79,7 @@ public class AbsenceManager extends JPanel implements ActionListener {
         saveBtn.addActionListener(this);
 
 
-        JButton unAbsBtn = new JButton("Retirer de la liste d'absences");
+         unAbsBtn = new JButton("Retirer de la liste d'absences");
         unAbsBtn.addActionListener(this);
         absPanel.add(unAbsBtn, BorderLayout.NORTH);
 
@@ -115,7 +116,7 @@ public class AbsenceManager extends JPanel implements ActionListener {
             absTable = new JTable(donnees1 , entetes);
             AbsTab.setViewportView(absTable);
         }
-        if(e.getSource() == saveBtn){
+        if(e.getSource() == unAbsBtn){
             int row = absTable.getSelectedRow();
             String[][] newDonnees = new String[donnees1.length-1][4];
             int val2 = Integer.parseInt((String)classTable.getValueAt(row,0));
