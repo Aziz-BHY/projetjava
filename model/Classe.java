@@ -1,5 +1,4 @@
-package model;
+package Model;
 
 public class Classe {
-
 }
