@@ -5,6 +5,9 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Properties;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -43,7 +46,28 @@ public class Util {
 
 
 
-    public static void imprimer(String[][] donnees , String[] entetes) throws IOException {
+    public static void imprimer() throws IOException, SQLException {
+        ResultSet myRs = DB.get("SELECT numseance , date_abs , etudiant.nom nom_etudiant , enseignant.nom nom_enseignant, matiere.nom_matiere\n" +
+                        " FROM absence , etudiant , enseignant , matiere \n" +
+                        " where absence.id_etudiant = etudiant.id_etudiant and absence.id_enseignant = enseignant.id_enseignant \n" +
+                        " and absence.id_matiere = matiere.id_matiere;");
+        ResultSet count = DB.get("SELECT count(*)\n" +
+                " FROM absence , etudiant , enseignant , matiere \n" +
+                " where absence.id_etudiant = etudiant.id_etudiant and absence.id_enseignant = enseignant.id_enseignant \n" +
+                " and absence.id_matiere = matiere.id_matiere ;");
+        count.next();
+        int x = Integer.parseInt(count.getString("count(*)"));
+        String[][] donnees = new String[x][5];
+        for(int i = 0; i<x; i++){
+            myRs.next();
+            donnees[i][0] = myRs.getString("numseance");
+            donnees[i][1] = myRs.getString("date_abs");
+            donnees[i][2] = myRs.getString("nom_etudiant");
+            donnees[i][3] = myRs.getString("nom_enseignant");
+            donnees[i][4] = myRs.getString("nom_matiere");
+        }
+        String[] entetes = {"numseance" , "date_abs", "nom_etudiant", "nom_enseignant" ,"nom_matiere"};
+
         HSSFWorkbook workbook = new HSSFWorkbook();
         HSSFSheet sheet = workbook.createSheet("firsttry");
         int rowMax = donnees.length;
