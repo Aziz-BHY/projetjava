@@ -3,10 +3,15 @@ package view;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+
+import Model.DB;
+import Model.User;
 import net.miginfocom.swing.MigLayout;
 import sun.security.util.ArrayUtil;
-import model.Util;
+import Model.Util;
 import java.awt.event.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 
@@ -22,16 +27,15 @@ public class AbsenceManager extends JPanel implements ActionListener {
     private JScrollPane AbsTab;
     private ArrayList<Integer> AbsListe;
     private JButton unAbsBtn;
-    String[] entetes = {"id_etudiant" , "nom", "prenom" , "classe"};
-    String[][] donnees = {
-            {"2" , "aziz" , "ben hadj yahia", "LFI"},
-            {"3" , "azazaz3" , "ben az yahia", "LFI"},
-            {"4" , "azazaz4" , "ben az yahia", "LFI"},
-            {"5" , "azazaz5" , "ben az yahia", "LFI"}
-    };
+    private User user;
+    private String lastSearch;
+    private JComboBox classCombo;
+    String[] entetes = {"id_etudiant" , "nom", "prenom" , "e_mail"};
+
     private String[][] donnees1 = new String[0][4];
 
-    public AbsenceManager() {
+    public AbsenceManager(User user) throws SQLException {
+        this.user = user;
 
         frame=new AppFrame("Gerer les absences des classes",650,500,true);
         frame.getContentPane().setLayout(new BorderLayout(0, 0));
@@ -44,12 +48,21 @@ public class AbsenceManager extends JPanel implements ActionListener {
         JLabel classLabel = new JLabel("Classe :");
         choicePanel.add(classLabel, "cell 2 0,alignx right");
 
-        JComboBox classCombo = new JComboBox();
+        ResultSet rs = DB.get("Select filiére, niveau , nom_matiere , correspondance.id_matiere from correspondance , classe , matiere\n" +
+                "where id_enseignant = 2 and correspondance.id_classe = classe.id_classe and correspondance.id_matiere = matiere.id_matiere;");
+        int nb = DB.count("*", "correspondance" , new String[][]{{"id_enseignant","=", String.valueOf(user.id)}});
+        String[] array = new String[nb+1];
+        array[0] ="----------";
+        for(int i=1;i<=nb;i++){
+            if(rs.next())
+            array[i] = rs.getString("filiére")+"-"+rs.getString("niveau")+"-"+rs.getString("nom_matiere")+"-"+rs.getString("id_matiere");
+        }
+         classCombo = new JComboBox(array);
         choicePanel.add(classCombo, "cell 3 0,growx");
 
          importBtn = new JButton("Importer");
         choicePanel.add(importBtn, "cell 5 0,growx");
-
+        importBtn.addActionListener(this);
         JPanel actionsPanel = new JPanel();
         frame.getContentPane().add(actionsPanel, BorderLayout.CENTER);
         actionsPanel.setLayout(new MigLayout("", "[273.00,grow][5.00][grow]", "[grow]"));
@@ -63,7 +76,7 @@ public class AbsenceManager extends JPanel implements ActionListener {
         classPanel.add(absBtn, BorderLayout.NORTH);
 
         ClassTab = new JScrollPane();
-        classTable =  new JTable(donnees , entetes);
+        classTable =  new JTable();
         ClassTab.setViewportView(classTable);
         classPanel.add(ClassTab, BorderLayout.CENTER);
 
@@ -108,7 +121,6 @@ public class AbsenceManager extends JPanel implements ActionListener {
                     donnees2 = Util.concat(donnees2,newString , 4);
                     j++;
                     AbsListe.add(new Integer(Integer.parseInt((String)classTable.getValueAt(row[i],0))));
-                    System.out.println(AbsListe);
                 }
             }
             if(!donnees2.equals(new String[0][4]))
@@ -116,10 +128,10 @@ public class AbsenceManager extends JPanel implements ActionListener {
             absTable = new JTable(donnees1 , entetes);
             AbsTab.setViewportView(absTable);
         }
-        if(e.getSource() == unAbsBtn){
+        else if(e.getSource() == unAbsBtn){
             int row = absTable.getSelectedRow();
             String[][] newDonnees = new String[donnees1.length-1][4];
-            int val2 = Integer.parseInt((String)classTable.getValueAt(row,0));
+            int val2 = Integer.parseInt((String)absTable.getValueAt(row,0));
             System.out.println(val2);
             int k=0;
             for(int i=0; i<donnees1.length; i++){
@@ -134,6 +146,51 @@ public class AbsenceManager extends JPanel implements ActionListener {
             donnees1 = newDonnees;
             absTable = new JTable(donnees1 , entetes);
             AbsTab.setViewportView(absTable);
+        }
+        else if(e.getSource() == importBtn){
+            absTable = new JTable();
+            AbsTab.setViewportView(absTable);
+            lastSearch = (String)classCombo.getSelectedItem();
+            String[] classe = lastSearch.split("-");
+            ResultSet rs = null;
+            try {
+                rs = DB.get("select id_etudiant , nom , prenom , email from etudiant \n" +
+                        "where id_classe = (select id_classe from classe where filiére = '"+classe[0]+"' and niveau ='"+classe[1]+"' );");
+               ResultSet rs1 = DB.get("select count(*) from etudiant \n" +
+                        "where id_classe = (select id_classe from classe where filiére = '"+classe[0]+"' and niveau ='"+classe[1]+"' );");
+               rs1.next();
+               int x = Integer.parseInt(rs1.getString("count(*)"));
+               String[][] donnees = new String[x][4];
+               int i = 0;
+               while(rs.next()){
+                   donnees[i][0] = rs.getString("id_etudiant");
+                   donnees[i][1] = rs.getString("nom");
+                   donnees[i][2] = rs.getString("prenom");
+                   donnees[i][3] = rs.getString("email");
+                   i++;
+
+               }
+               classTable = new JTable(donnees, entetes);
+                ClassTab.setViewportView(classTable);
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+
+
+        }
+        else if(e.getSource() == saveBtn){
+            int nb = AbsListe.size();
+            if(nb>0){
+                for(int i = 0 ; i<nb ; i++){
+                    try {
+                        DB.insert("INSERT INTO absence (date_abs , id_etudiant , id_enseignant , id_matiere) VALUES (sysdate() , "+AbsListe.get(i).toString()+" ,  "+String.valueOf(user.id)+" , "+lastSearch.split("-")[3]+")");
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                frame.dispose();
+            }
         }
     }
 }

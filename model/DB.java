@@ -45,7 +45,6 @@ public abstract class DB {
                 }
             }
             try {
-
                 return (myStmt.executeQuery("SELECT "+what+" FROM "+table+" WHERE "+where+";"));
             } catch (SQLException e) {
                 // TODO Auto-generated catch block
@@ -55,6 +54,11 @@ public abstract class DB {
 
         return null;
 
+    }
+
+    public static ResultSet get (String query) throws SQLException {
+        Statement myStmt = DB.connect();
+                return(myStmt.executeQuery(query));
     }
 
     public static int delete (String table, String[][] wheres){
@@ -68,7 +72,7 @@ public abstract class DB {
                 {
                     if (!wheres[i][2].matches("[0-9]+")) wheres[i][2]="'"+wheres[i][2]+"'";
                     if(i==0) {where=wheres[0][0]+wheres[0][1]+wheres[0][2];}
-                    else{where.concat(" AND "+wheres[i][0]+wheres[i][1]+wheres[i][2]);}
+                    else{where+=" AND "+wheres[i][0]+wheres[i][1]+wheres[i][2];}
                 }
             }
             try {
@@ -114,6 +118,12 @@ public abstract class DB {
             e.printStackTrace();
             /*ADD DIALOGUE WINDOW HERE with the dialogue class*/
         }
+    }
+    public static void insert (String query) throws SQLException {
+        Statement myStmt = DB.connect();
+
+            myStmt.executeUpdate(query);
+
     }
 
 

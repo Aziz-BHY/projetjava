@@ -6,26 +6,25 @@ import java.sql.SQLException;
 public class User {
     public String categ;
     public String name;
-    public int classe_id;
+    public int id;
 
     private String login;
     private String pwd;
 
 
     public User(ResultSet rs, String userCat) throws SQLException {
-        categ= userCat;
-        name= rs.getString(2)+" "+rs.getString(3);
+        categ = userCat;
+        name = rs.getString("nom") + " " + rs.getString("prenom");
 
-        login= rs.getString(4);
-        pwd= rs.getString(5);
+        login = rs.getString("login");
+        pwd = rs.getString("pwd");
 
-        if(categ=="etudiant")
-            classe_id= rs.getInt(6);
+        id =Integer.parseInt( rs.getString("id_"+userCat));
+
 
     }
-
     public String getClasse() {
-        ResultSet rs =DB.get("*", "classe", new String[][] {{"id_classe","=",String.valueOf(classe_id)}});
+        ResultSet rs =DB.get("*", "classe", new String[][] {{"id_classe","=",String.valueOf(id)}});
         try {
             if(rs.next())
             {
