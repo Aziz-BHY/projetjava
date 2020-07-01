@@ -276,107 +276,8 @@ public class ManageFrame extends JPanel implements ActionListener {
         ResultSet myRs;
         if(e.getSource() == searchBtn){
             tabbedPane.setSelectedIndex(0);
-            String[][] where = null;
             lastSearch = (String)tablesCombo.getSelectedItem();
-            if(textField.getText().length()>0) where = new String[][]{{"id_"+lastSearch , "=", textField.getText()}};
-            int nb = DB.count("*" , lastSearch, where);
-            myRs = DB.get("*" , lastSearch, where);
-            if(lastSearch.equals("Etudiant")){
-                String[][] donnees = new String[nb][5];
-                for(int i =0;i<nb;i++){
-                    try{
-                        myRs.next();
-                        donnees[i][0] =myRs.getString("id_etudiant");
-                        donnees[i][1] =myRs.getString("nom");
-                        donnees[i][2] =myRs.getString("prenom");
-                        donnees[i][3] =myRs.getString("id_classe");
-                        donnees[i][4] =myRs.getString("email");
-                    }
-                    catch(Exception ex){
-
-                    }
-                }
-                String[] entetes = {"id_etudiant","nom","prenom","id_classe","email"};
-                table = new JTable(donnees, entetes);
-
-                ResultsTab.setViewportView(table);
-            }
-            else if(lastSearch.equals("Classe")){
-                String[][] donnees = new String[nb][4];
-                for(int i =0;i<nb;i++){
-                    try{
-                        myRs.next();
-                        donnees[i][0] =myRs.getString("id_classe");
-                        donnees[i][1] =myRs.getString("libelle");
-                        donnees[i][2] =myRs.getString("niveau");
-                        donnees[i][3] =myRs.getString("filiére");
-                    }
-                    catch(Exception ex){
-
-                    }
-                }
-                String[] entetes = {"id_classe","libelle","niveau","filiére"};
-                table = new JTable(donnees, entetes);
-
-                ResultsTab.setViewportView(table);
-            }
-            else if(lastSearch.equals("Enseignant")){
-                String[][] donnees = new String[nb][4];
-                for(int i =0;i<nb;i++){
-                    try{
-                        myRs.next();
-                        donnees[i][0] =myRs.getString("id_enseignant");
-                        donnees[i][1] =myRs.getString("nom");
-                        donnees[i][2] =myRs.getString("prenom");
-                        donnees[i][3] =myRs.getString("email");
-                    }
-                    catch(Exception ex){
-
-                    }
-                }
-                String[] entetes = {"id_enseignant","nom","prenom"};
-                table = new JTable(donnees, entetes);
-
-                ResultsTab.setViewportView(table);
-            }
-            else if(lastSearch.equals("Responsable")){
-                String[][] donnees = new String[nb][4];
-                for(int i =0;i<nb;i++){
-                    try{
-                        myRs.next();
-                        donnees[i][0] =myRs.getString("id_responsable");
-                        donnees[i][1] =myRs.getString("nom");
-                        donnees[i][2] =myRs.getString("prenom");
-                        donnees[i][3] =myRs.getString("email");
-                    }
-                    catch(Exception ex){
-
-                    }
-                }
-                String[] entetes = {"id_responsable","nom","prenom"};
-                table = new JTable(donnees, entetes);
-
-                ResultsTab.setViewportView(table);
-            }
-            else if(lastSearch.equals("Matiere")){
-                String[][] donnees = new String[nb][2];
-                for(int i =0;i<nb;i++){
-                    try{
-                        myRs.next();
-                        donnees[i][0] =myRs.getString("id_matiere");
-                        donnees[i][1] =myRs.getString("libelle");
-                    }
-                    catch(Exception ex){
-
-                    }
-                }
-                String[] entetes = {"id_matiere","libelle"};
-                table = new JTable(donnees, entetes);
-
-                ResultsTab.setViewportView(table);
-            }
-
-
+            afficher();
         } //fou9
         else if (e.getSource() == consultBtn){
             if(lastSearch.equals("Etudiant")) {
@@ -422,6 +323,7 @@ public class ManageFrame extends JPanel implements ActionListener {
                 DB.delete("absence", donnees);
             }
             DB.delete(lastSearch, donnees);
+            afficher();
         } //fou9
         else if (e.getSource() == editInfoBtn){
             if(!idClassField.getText().isEmpty()){
@@ -442,6 +344,7 @@ public class ManageFrame extends JPanel implements ActionListener {
                 libelleField.setEditable(false);
                 nivField.setEditable(false);
                 filiereField.setEditable(false);
+                afficher();
             }
         } //classe
         else if (e.getSource() == deleteClassBtn){
@@ -458,6 +361,7 @@ public class ManageFrame extends JPanel implements ActionListener {
                 libelleField.setEditable(false);
                 nivField.setEditable(false);
                 filiereField.setEditable(false);
+                afficher();
             }
         } //classe
         else if(e.getSource() == consultListBtn){
@@ -507,6 +411,7 @@ public class ManageFrame extends JPanel implements ActionListener {
                 textField_5.setText("");
                 textField_6.setText("");
                 textField_7.setText("");
+                afficher();
             }
         } //person supprimer
         else if (e.getSource() == btnNewButton_4){
@@ -529,6 +434,7 @@ public class ManageFrame extends JPanel implements ActionListener {
                 textField_5.setEditable(false);
                 textField_6.setEditable(false);
                 textField_7.setEditable(false);
+                afficher();
             }
         }//person
         else if (e.getSource() == btnNewButton_3){
@@ -543,7 +449,108 @@ public class ManageFrame extends JPanel implements ActionListener {
         }//person
 
         else if(e.getSource() == addBtn){
-           // new ChooseAdd();
+            new ChooseAdd();
+        }
+    }
+    void afficher(){
+        String[][] where = null;
+        ResultSet myRs;
+        if(textField.getText().length()>0) where = new String[][]{{"id_"+lastSearch , "=", textField.getText()}};
+        int nb = DB.count("*" , lastSearch, where);
+        myRs = DB.get("*" , lastSearch, where);
+        if(lastSearch.equals("Etudiant")){
+            String[][] donnees = new String[nb][5];
+            for(int i =0;i<nb;i++){
+                try{
+                    myRs.next();
+                    donnees[i][0] =myRs.getString("id_etudiant");
+                    donnees[i][1] =myRs.getString("nom");
+                    donnees[i][2] =myRs.getString("prenom");
+                    donnees[i][3] =myRs.getString("id_classe");
+                    donnees[i][4] =myRs.getString("email");
+                }
+                catch(Exception ex){
+
+                }
+            }
+            String[] entetes = {"id_etudiant","nom","prenom","id_classe","email"};
+            table = new JTable(donnees, entetes);
+
+            ResultsTab.setViewportView(table);
+        }
+        else if(lastSearch.equals("Classe")){
+            String[][] donnees = new String[nb][4];
+            for(int i =0;i<nb;i++){
+                try{
+                    myRs.next();
+                    donnees[i][0] =myRs.getString("id_classe");
+                    donnees[i][1] =myRs.getString("libelle");
+                    donnees[i][2] =myRs.getString("niveau");
+                    donnees[i][3] =myRs.getString("filiére");
+                }
+                catch(Exception ex){
+
+                }
+            }
+            String[] entetes = {"id_classe","libelle","niveau","filiére"};
+            table = new JTable(donnees, entetes);
+
+            ResultsTab.setViewportView(table);
+        }
+        else if(lastSearch.equals("Enseignant")){
+            String[][] donnees = new String[nb][4];
+            for(int i =0;i<nb;i++){
+                try{
+                    myRs.next();
+                    donnees[i][0] =myRs.getString("id_enseignant");
+                    donnees[i][1] =myRs.getString("nom");
+                    donnees[i][2] =myRs.getString("prenom");
+                    donnees[i][3] =myRs.getString("email");
+                }
+                catch(Exception ex){
+
+                }
+            }
+            String[] entetes = {"id_enseignant","nom","prenom"};
+            table = new JTable(donnees, entetes);
+
+            ResultsTab.setViewportView(table);
+        }
+        else if(lastSearch.equals("Responsable")){
+            String[][] donnees = new String[nb][4];
+            for(int i =0;i<nb;i++){
+                try{
+                    myRs.next();
+                    donnees[i][0] =myRs.getString("id_responsable");
+                    donnees[i][1] =myRs.getString("nom");
+                    donnees[i][2] =myRs.getString("prenom");
+                    donnees[i][3] =myRs.getString("email");
+                }
+                catch(Exception ex){
+
+                }
+            }
+            String[] entetes = {"id_responsable","nom","prenom"};
+            table = new JTable(donnees, entetes);
+
+            ResultsTab.setViewportView(table);
+        }
+        else if(lastSearch.equals("Matiere")){
+            String[][] donnees = new String[nb][2];
+            for(int i =0;i<nb;i++){
+                try{
+                    myRs.next();
+                    donnees[i][0] =myRs.getString("id_matiere");
+                    donnees[i][1] =myRs.getString("libelle");
+                }
+                catch(Exception ex){
+
+                }
+            }
+            String[] entetes = {"id_matiere","libelle"};
+            table = new JTable(donnees, entetes);
+
+            ResultsTab.setViewportView(table);
         }
     }
 }

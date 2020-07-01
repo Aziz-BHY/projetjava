@@ -31,7 +31,7 @@ public class ListeAbs extends JPanel implements ActionListener {
     private JScrollPane scrollPane;
     private String lastDate = "";
     private String lastName = "";
-    public ListeAbs() {
+    public ListeAbs(String categ) {
         frame=new AppFrame("Liste d'Absences", 650,550,false);
 
         frame.getContentPane().add(this, BorderLayout.CENTER);
@@ -49,10 +49,14 @@ public class ListeAbs extends JPanel implements ActionListener {
         selectPanel.add(textField, "cell 3 0,growx");
         textField.setColumns(10);
 
-        deleteBtn = new JButton("Effacer Absence");
-        selectPanel.add(deleteBtn, "cell 5 0,growy");
-        deleteBtn.addActionListener(this);
+        if(categ.equals("responsable")) {
+            deleteBtn = new JButton("Effacer Absence");
+            selectPanel.add(deleteBtn, "cell 5 0,growy");
+            deleteBtn.addActionListener(this);
 
+            mailBtn = new JButton("Envoyer Mail");
+            selectPanel.add(mailBtn, "cell 5 1,grow");
+        }
         JLabel dateLabel = new JLabel("Selectionner une date :");
         selectPanel.add(dateLabel, "cell 2 1,alignx right");
 
@@ -62,8 +66,7 @@ public class ListeAbs extends JPanel implements ActionListener {
         spinner.setEditor(editor);
         selectPanel.add(spinner, "cell 3 1,growx");
 
-         mailBtn = new JButton("Envoyer Mail");
-        selectPanel.add(mailBtn, "cell 5 1,grow");
+
 
         searchBtn = new JButton("Rechercher");
         selectPanel.add(searchBtn, "cell 3 2,growx");

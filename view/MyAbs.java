@@ -1,5 +1,6 @@
 package view;
 import Model.DB;
+import Model.User;
 
 import javax.swing.*;
 
@@ -9,8 +10,10 @@ import java.sql.ResultSet;
 public class MyAbs extends JPanel{
     private AppFrame frame;
     private JTable table;
+    private int id;
 
-    public MyAbs(int id) {
+    public MyAbs(User user) {
+        id= user.id;
         frame= new AppFrame("Mes Absences",550,450,false);
 
         //frame.getContentPane().add(this, BorderLayout.CENTER);

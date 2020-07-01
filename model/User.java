@@ -7,6 +7,7 @@ public class User {
     public String categ;
     public String name;
     public int id;
+    public int classe_id;
 
     private String login;
     private String pwd;
@@ -20,15 +21,18 @@ public class User {
         pwd = rs.getString("pwd");
 
         id =Integer.parseInt( rs.getString("id_"+userCat));
-
+        if(categ.equals("etudiant"))
+            classe_id= rs.getInt("id_classe");
 
     }
     public String getClasse() {
-        ResultSet rs =DB.get("*", "classe", new String[][] {{"id_classe","=",String.valueOf(id)}});
+        System.out.println("inside");
+        ResultSet rs =DB.get("*", "classe", new String[][] {{"id_classe","=",String.valueOf(classe_id)}});
         try {
             if(rs.next())
             {
-                return rs.getString(4)+String.valueOf(rs.getInt(3));
+                System.out.println(rs.getString("filiére"));
+                return rs.getString("filiére")+String.valueOf(rs.getInt("niveau"));
             }
         } catch (SQLException e) {
             e.printStackTrace();

@@ -6,16 +6,18 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 public class ActionFrame extends JPanel{
 
     private AppFrame frame;
     private JButton changePassBtn;
-
+    private JButton consultAbsBtn;
+    private User user;
 
     public ActionFrame(User user)
     {
-
+        this.user = user;
         switch(user.categ) {
             case("etudiant"):
                 studentFrame(user.name,user.getClasse());
@@ -42,7 +44,7 @@ public class ActionFrame extends JPanel{
      */
     public void respFrame(String name) {
 
-        frame= new AppFrame("Options",360,360,false);
+        frame= new AppFrame("Options",360,430,false);
 
         frame.getContentPane().add(this, BorderLayout.CENTER);
         this.setLayout(null);
@@ -75,10 +77,25 @@ public class ActionFrame extends JPanel{
 
         JButton statsBtn = new JButton("Voir Statistiques");
         statsBtn.setFont(new Font("Titillium Web SemiBold", Font.BOLD, 14));
-        statsBtn.setBounds(65, 165, 220, 50);
+        statsBtn.setBounds(65, 230, 220, 50);
         add(statsBtn);
 
-        changePassBtn.setBounds(65, 230, 220, 50);
+        JButton AbsBtn = new JButton("Gerer les absences");
+        AbsBtn.setFont(new Font("Titillium Web SemiBold", Font.BOLD, 14));
+        AbsBtn.setBounds(65, 165, 220, 50);
+        add(AbsBtn);
+        AbsBtn.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                    new ListeAbs(user.categ);
+
+
+            }
+
+        });
+
+
+        changePassBtn.setBounds(65, 295, 220, 50);
         add(changePassBtn);
 
     }
@@ -114,19 +131,30 @@ public class ActionFrame extends JPanel{
         nameEns.setBounds(130, 17, 156, 28);
         add(nameEns);
 
-        JButton classesBtn = new JButton("Mes Classes");
+        JButton classesBtn = new JButton("Liste de présence");
         classesBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                try {
+                    new AbsenceManager(user);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
         classesBtn.setFont(new Font("Titillium Web SemiBold", Font.PLAIN, 14));
         classesBtn.setBounds(87, 60, 191, 33);
         add(classesBtn);
 
-        JButton matBtn = new JButton("Mes Matieres");
+        JButton matBtn = new JButton("Liste d'absence");
         matBtn.setFont(new Font("Titillium Web SemiBold", Font.PLAIN, 14));
         matBtn.setBounds(87, 103, 191, 33);
         add(matBtn);
+        matBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                    new ListeAbs(user.categ);
+
+            }
+        });
 
         changePassBtn.setBounds(87, 146, 191, 33);
         add(changePassBtn);
@@ -152,10 +180,15 @@ public class ActionFrame extends JPanel{
         changePassBtn.setFont(new Font("Titillium Web SemiBold", Font.BOLD, 14));
 
 
-        JButton consultAbsBtn = new JButton("Consulter mes absences");
+        consultAbsBtn = new JButton("Consulter mes absences");
         consultAbsBtn.setFont(new Font("Titillium Web SemiBold", Font.PLAIN, 14));
         consultAbsBtn.setBounds(87, 90, 181, 43);
         this.add(consultAbsBtn);
+        consultAbsBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new MyAbs(user);}
+        });
 
         JLabel labelStu = new JLabel("Etudiant : ");
         labelStu.setFont(new Font("Titillium Web SemiBold", Font.BOLD, 20));
@@ -182,13 +215,6 @@ public class ActionFrame extends JPanel{
         this.add(changePassBtn);
     }
 
-
-		 /*passbtnAction
-		 public void actionPerformed(ActionEvent e) {
-				new ChangePass(dbl,user);
-				frame.dispose();
-
-			}*/
 }
 
 

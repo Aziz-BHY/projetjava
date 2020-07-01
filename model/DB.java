@@ -45,6 +45,7 @@ public abstract class DB {
                 }
             }
             try {
+                System.out.println("SELECT "+what+" FROM "+table+" WHERE "+where+";");
                 return (myStmt.executeQuery("SELECT "+what+" FROM "+table+" WHERE "+where+";"));
             } catch (SQLException e) {
                 // TODO Auto-generated catch block
@@ -76,7 +77,6 @@ public abstract class DB {
                 }
             }
             try {
-                System.out.println("delete from "+table + " where " + where +" ;");
                 return(myStmt.executeUpdate(new String ("delete from "+table + " where " + where +" ;")));
             } catch (SQLException e) {
                 // TODO Auto-generated catch block
