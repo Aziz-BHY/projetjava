@@ -11,7 +11,7 @@ import Model.DB;
 import net.miginfocom.swing.MigLayout;
 
 public class ManageFrame extends JPanel implements ActionListener {
-    private JFrame frame;
+    private AppFrame frame;
 
 
     private JTabbedPane tabbedPane;
@@ -77,6 +77,7 @@ public class ManageFrame extends JPanel implements ActionListener {
         frame= new AppFrame("Gerer "+what,700,560,true);
         frame.setSize(700,570);
         frame.getContentPane().setLayout(new BorderLayout());
+
 
         JPanel tabsPanel = new JPanel();
         frame.getContentPane().add(tabsPanel, BorderLayout.CENTER);
@@ -475,6 +476,7 @@ public class ManageFrame extends JPanel implements ActionListener {
             }
             String[] entetes = {"id_etudiant","nom","prenom","id_classe","email"};
             table = new JTable(donnees, entetes);
+            frame.init_fichier("liste etudiant" , donnees , entetes);
 
             ResultsTab.setViewportView(table);
         }
@@ -494,6 +496,7 @@ public class ManageFrame extends JPanel implements ActionListener {
             }
             String[] entetes = {"id_classe","libelle","niveau","filiére"};
             table = new JTable(donnees, entetes);
+            frame.init_fichier("liste classe" , donnees , entetes);
 
             ResultsTab.setViewportView(table);
         }
@@ -513,6 +516,7 @@ public class ManageFrame extends JPanel implements ActionListener {
             }
             String[] entetes = {"id_enseignant","nom","prenom"};
             table = new JTable(donnees, entetes);
+            frame.init_fichier("liste enseignant" , donnees , entetes);
 
             ResultsTab.setViewportView(table);
         }
@@ -532,6 +536,7 @@ public class ManageFrame extends JPanel implements ActionListener {
             }
             String[] entetes = {"id_responsable","nom","prenom"};
             table = new JTable(donnees, entetes);
+            frame.init_fichier("liste responsable" , donnees , entetes);
 
             ResultsTab.setViewportView(table);
         }
@@ -549,6 +554,7 @@ public class ManageFrame extends JPanel implements ActionListener {
             }
             String[] entetes = {"id_matiere","libelle"};
             table = new JTable(donnees, entetes);
+            frame.init_fichier("liste matiere" , donnees , entetes);
 
             ResultsTab.setViewportView(table);
         }

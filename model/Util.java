@@ -46,32 +46,13 @@ public class Util {
 
 
 
-    public static void imprimer() throws IOException, SQLException {
-        ResultSet myRs = DB.get("SELECT numseance , date_abs , etudiant.nom nom_etudiant , enseignant.nom nom_enseignant, matiere.nom_matiere\n" +
-                        " FROM absence , etudiant , enseignant , matiere \n" +
-                        " where absence.id_etudiant = etudiant.id_etudiant and absence.id_enseignant = enseignant.id_enseignant \n" +
-                        " and absence.id_matiere = matiere.id_matiere;");
-        ResultSet count = DB.get("SELECT count(*)\n" +
-                " FROM absence , etudiant , enseignant , matiere \n" +
-                " where absence.id_etudiant = etudiant.id_etudiant and absence.id_enseignant = enseignant.id_enseignant \n" +
-                " and absence.id_matiere = matiere.id_matiere ;");
-        count.next();
-        int x = Integer.parseInt(count.getString("count(*)"));
-        String[][] donnees = new String[x][5];
-        for(int i = 0; i<x; i++){
-            myRs.next();
-            donnees[i][0] = myRs.getString("numseance");
-            donnees[i][1] = myRs.getString("date_abs");
-            donnees[i][2] = myRs.getString("nom_etudiant");
-            donnees[i][3] = myRs.getString("nom_enseignant");
-            donnees[i][4] = myRs.getString("nom_matiere");
-        }
-        String[] entetes = {"numseance" , "date_abs", "nom_etudiant", "nom_enseignant" ,"nom_matiere"};
+    public static void imprimer(String nom , String[][] donnees , String[] entete) throws IOException, SQLException {
+
 
         HSSFWorkbook workbook = new HSSFWorkbook();
         HSSFSheet sheet = workbook.createSheet("firsttry");
         int rowMax = donnees.length;
-        int cellMax = entetes.length;
+        int cellMax = entete.length;
         Cell cell;
         Row row;
         int rownum = 0;
@@ -79,7 +60,7 @@ public class Util {
         row = sheet.createRow(rownum);
         for(int j = 0; j<cellMax ; j++){
             cell = row.createCell(j, CellType.STRING);
-            cell.setCellValue(entetes[j]);
+            cell.setCellValue(entete[j]);
         }
 
 
@@ -92,7 +73,7 @@ public class Util {
             }
         }
 
-        File file = new File("C:\\Users\\aziz ben hadj yahia\\Desktop\\projetjava\\firsttry.xls");
+        File file = new File("C:\\Users\\aziz ben hadj yahia\\Desktop\\projetjava\\"+nom+".xls");
         file.getParentFile().mkdirs();
 
         FileOutputStream outFile = new FileOutputStream(file);

@@ -14,7 +14,7 @@ public class App {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                   //  new LoginFrame();
-                new ManageFrame("aaa");
+                new LoginFrame();
             }
         });
     }

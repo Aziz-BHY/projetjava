@@ -1,13 +1,20 @@
 package view;
 
+import Model.Util;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.sql.SQLException;
 
-public class AppFrame extends JFrame{
+public class AppFrame extends JFrame implements ActionListener{
     private ImageIcon icon;
-
+    private String nom;
+    private JMenuItem printItem;
+    private String[][] donnees;
+    private String[] entete;
 
 
 
@@ -43,7 +50,11 @@ public class AppFrame extends JFrame{
 	*/
 
 
-
+    public void init_fichier(String nom , String[][] donnees , String[] entete){
+        this.nom = nom;
+        this.donnees = donnees;
+        this.entete = entete;
+    }
 
     private JMenuBar createMenuBar() {
         // Creating the Bar
@@ -55,7 +66,8 @@ public class AppFrame extends JFrame{
 
         //Creating menu Items
         /*file*/
-        JMenuItem printItem= new JMenuItem("Imprimer");
+         printItem= new JMenuItem("Imprimer");
+        printItem.addActionListener(this);
         JMenuItem exitItem= new JMenuItem("Exit");
 
         /*window*/
@@ -166,5 +178,16 @@ public class AppFrame extends JFrame{
 
 
         return menuBar;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == printItem){
+            try {
+                Util.imprimer(nom , donnees, entete);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 }

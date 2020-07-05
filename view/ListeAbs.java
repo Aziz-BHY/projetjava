@@ -32,7 +32,7 @@ public class ListeAbs extends JPanel implements ActionListener {
     private String lastDate = "";
     private String lastName = "";
     public ListeAbs(String categ) {
-        frame=new AppFrame("Liste d'Absences", 650,550,false);
+        frame=new AppFrame("Liste d'Absences", 650,550,true);
 
         frame.getContentPane().add(this, BorderLayout.CENTER);
         setLayout(new BorderLayout(0, 0));
@@ -152,6 +152,7 @@ public class ListeAbs extends JPanel implements ActionListener {
                 donnees[i][4] = myRs.getString("nom_matiere");
             }
             String[] entetes = {"numseance" , "date_abs", "nom_etudiant", "nom_enseignant" ,"nom_matiere"};
+            frame.init_fichier("absence "+date , donnees ,entetes);
             table = new JTable(donnees, entetes);
             scrollPane.setViewportView(table);
         }catch (SQLException ex) {
