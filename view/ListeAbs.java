@@ -89,13 +89,16 @@ public class ListeAbs extends JPanel implements ActionListener {
         }
         if (e.getSource() == deleteBtn){
             int row = table.getSelectedRow();
-            int numSe = Integer.parseInt((String)table.getValueAt(row,0));
-            String date = (String)table.getValueAt(row,1);
-            DB.delete("absence" , new String[][]{{"numseance" , "=" , String.valueOf(numSe)} , {"date_abs" , "=" , date}});
-            insertTab(lastName,lastDate);
+            if(row>0){
+                int numSe = Integer.parseInt((String)table.getValueAt(row,0));
+                String date = (String)table.getValueAt(row,1);
+                DB.delete("absence" , new String[][]{{"numseance" , "=" , String.valueOf(numSe)} , {"date_abs" , "=" , date}});
+                insertTab(lastName,lastDate);
+            }
         }
         if(e.getSource() == mailBtn){
             int row = table.getSelectedRow();
+            if(row>0){
             int numSe = Integer.parseInt((String)table.getValueAt(row,0));
             try {
                 ResultSet rs = DB.get("select email, nom , prenom from etudiant, absence where etudiant.id_etudiant = absence.id_etudiant and numseance="+numSe+";");
@@ -106,6 +109,7 @@ public class ListeAbs extends JPanel implements ActionListener {
                 Util.envoyer("absence" , "" ,mail );
             } catch (SQLException ex) {
                 ex.printStackTrace();
+            }
             }
 
         }

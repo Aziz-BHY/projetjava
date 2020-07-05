@@ -2,6 +2,7 @@ package view;
 
 import Model.DB;
 import Model.User;
+import controller.Messages;
 
 import javax.swing.*;
 import java.awt.*;
@@ -72,30 +73,28 @@ public class ChangePass extends JPanel implements ActionListener {
 
             if(ancien.isEmpty() || new1.isEmpty() || new2.isEmpty()){
                //erreur
-                System.out.println("erreur1");
+                Messages.showWarning(1);
             }
             else {
                 if(!new1.equals(new2)){
-                    System.out.println("erreur2");
+                   Messages.showMessage("les deux nouveaux champs doivent être identiques");
                 }else
                 {
                     try {
                         ResultSet rs = DB.get("pwd", user.categ, new String[][]{
                                 {"id_" + user.categ, "=", user.id + ""}
                         });
-                        rs.next();
+                        if(rs.next()){
                         if(ancien.equals(rs.getString("pwd"))){
-                            System.out.println("c bon");
-                            System.out.println(new1 +" " + new2 + " " + ancien);
                             DB.update(user.categ , new String[][]{
                                             {"pwd"  , new1}
-                            } ,
-                                new String[]     {"id_" + user.categ, user.id + ""});
-                            frame.dispose();
+                            } , new String[]     {"id_" + user.categ, user.id + ""});
+                                frame.dispose();
+                            }else Messages.showMessage("vérifier votre ancien mot de passe");
                         }
                     }
                     catch(Exception ex){
-                        System.out.println("erreur3");
+                       Messages.showError(1);
 
                     }
                 }

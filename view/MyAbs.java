@@ -1,6 +1,7 @@
 package view;
 import Model.DB;
 import Model.User;
+import controller.Messages;
 
 import javax.swing.*;
 
@@ -34,7 +35,7 @@ public class MyAbs extends JPanel{
                     donnees[i][4] =myRs.getString("id_matiere");
                 }
                 catch(Exception ex){
-
+                    Messages.showError(1);
                 }
                 JScrollPane j = new JScrollPane();
         table = new JTable(donnees , entetes);

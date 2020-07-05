@@ -79,6 +79,14 @@ public class ActionFrame extends JPanel{
         statsBtn.setFont(new Font("Titillium Web SemiBold", Font.BOLD, 14));
         statsBtn.setBounds(65, 230, 220, 50);
         add(statsBtn);
+        statsBtn.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                new StatsFrame();
+
+            }
+
+        });
 
         JButton AbsBtn = new JButton("Gerer les absences");
         AbsBtn.setFont(new Font("Titillium Web SemiBold", Font.BOLD, 14));

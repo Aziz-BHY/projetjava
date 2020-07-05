@@ -13,8 +13,7 @@ public class App {
         } catch(Exception e){e.printStackTrace();}
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                  //  new LoginFrame();
-                new LoginFrame();
+                    new LoginFrame();
             }
         });
     }

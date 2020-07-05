@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import Model.DB;
 import Model.User;
+import controller.Messages;
 
 public class LoginFrame extends JPanel {
     private AppFrame frame;
@@ -86,7 +87,9 @@ public class LoginFrame extends JPanel {
     private boolean login (String login, String pwd, String userTable) {
 
         if(login.isEmpty()||pwd.isEmpty())
-        {return false;}
+        {
+            Messages.showWarning(1);
+            return false;}
 
 
         try {
@@ -99,22 +102,9 @@ public class LoginFrame extends JPanel {
                 return true;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Messages.showError(1);
         }
-
-		/*ResultSet rs=  db.get("*",userTable.toLowerCase(),new String[][] {{"login","=",login},{"pwd","=",pwd}});
-		try {
-			if(rs.next())
-			{
-
-				new ActionFrame(db,new User(rs,userTable));
-				return true;
-			}
-		} catch (SQLException e) {
-			// add popup dialog no user found retry
-			e.printStackTrace();
-		}
-		*/
+        Messages.showMessage("Nom d'utilisateur ou mot de passe erroné");
         return false;
     }
 
